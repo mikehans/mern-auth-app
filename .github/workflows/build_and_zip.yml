@@ -22,21 +22,28 @@ jobs:
       - name: Package installations for Frontend
         run: |
           cd ./frontend
-          npm install
+          npm install --production
       - name: Build Frontend
         run: |
           cd ./frontend
           npm run build
-
   zip:
-    needs: build
+    needs: copy
     runs-on: ubuntu-latest
     steps:
       - name: Create ZIP package
-        run: echo "zip the backend files and the frontend/dist folder into a ZIP file"
-  another_job:
-    needs: build
+        uses: actions/thedoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'release.zip'
+          exclusions: './frontend/*'
+  release:
+    needs: zip
     runs-on: ubuntu-latest
     steps:
-      - name: Do something else after build (parallel with zip?)
-        run: echo "Do something else"
+      - name: Upload release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "release.zip"
+          token
+ 
