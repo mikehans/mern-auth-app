@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Package installations for Frontend
-        run: echo "npm install on the FE project"
+        run: ls
       - name: Build Frontend
         run: echo "Run FE build"
       - name: Package installations for Backend
