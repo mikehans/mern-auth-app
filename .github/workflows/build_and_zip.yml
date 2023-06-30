@@ -1,0 +1,21 @@
+name: Build and ZIP
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "master"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      build-fe: 
+        run: echo "npm install on the FE project"
+        run: echo "Running the FE build"
+      build-be:
+        run: echo "npm install on the BE project"
+  zip:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      do-zip: 
+        run: echo "zip the backend files and the frontend/dist folder into a ZIP file"
