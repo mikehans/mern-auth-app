@@ -26,7 +26,7 @@ jobs:
       - name: Build Frontend
         run: |
           cd ./frontend
-          npm build
+          npm run build
 
   zip:
     needs: build
