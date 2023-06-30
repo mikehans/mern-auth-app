@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build Frontend
-        run: echo "npm install on the FE project"
-        run: echo "Running the FE build"
+        run: echo "npm install on the FE project and run FE build"
       - name: Build Backend
         run: echo "npm install on the BE project"
   zip:
