@@ -8,12 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Package installations for Frontend
-        run: ls
-      - name: Build Frontend
-        run: echo "Run FE build"
       - name: Package installations for Backend
-        run: echo "npm install on the BE project"
+        run: npm install
+      - name: Package installations for Frontend
+        run: |
+          cd ./frontend
+          npm install
+      - name: Build Frontend
+        run: npm build
+
   zip:
     needs: build
     runs-on: ubuntu-latest
