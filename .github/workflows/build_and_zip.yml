@@ -20,3 +20,9 @@ jobs:
     steps:
       - name: Create ZIP package
         run: echo "zip the backend files and the frontend/dist folder into a ZIP file"
+  another_action:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do something else after build (parallel with zip?)
+        run: echo "Do something else"
