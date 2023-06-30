@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Create ZIP package
         run: echo "zip the backend files and the frontend/dist folder into a ZIP file"
-  another_action:
+  another_job:
     needs: build
     runs-on: ubuntu-latest
     steps:
