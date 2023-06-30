@@ -8,14 +8,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      build-fe: 
+      - name: Build Frontend
         run: echo "npm install on the FE project"
         run: echo "Running the FE build"
-      build-be:
+      - name: Build Backend
         run: echo "npm install on the BE project"
   zip:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      do-zip: 
+      - name: Create ZIP package
         run: echo "zip the backend files and the frontend/dist folder into a ZIP file"
