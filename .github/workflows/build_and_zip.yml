@@ -24,7 +24,9 @@ jobs:
           cd ./frontend
           npm install
       - name: Build Frontend
-        run: npm build
+        run: |
+          cd ./frontend
+          npm build
 
   zip:
     needs: build
