@@ -35,7 +35,14 @@ jobs:
         run: |
           npm run makeDeploy
       - name: ZIP deployment folder
-        run: zip deploy.zip deploy
+        run: |
+          cd ./deploy
+          zip -r ../deploy.zip .
+      - name: Release file
+        uses: ncipollo/release-action@v1
+        with: 
+          artifacts: "deploy.zip"
+          body: "This is the release body text"
 
   
  
