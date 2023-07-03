@@ -9,7 +9,10 @@
     "server": "nodemon backend/server.js",
     "client": "npm run dev --prefix frontend",
     "dev": "npm-run-all -p server client",
-    "clean": "rimraf -g **/node_modules **/dist *.zip"
+    "clean": "rimraf -g **/node_modules **/dist *.zip",
+    "clean:deploy": "rimraf -g ./deploy",
+    "premakeDeploy": "npm run clean:deploy",
+    "makeDeploy": "node scripts/makeDeploy.js"
   },
   "keywords": [],
   "author": "",
