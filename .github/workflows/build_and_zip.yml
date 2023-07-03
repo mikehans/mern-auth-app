@@ -34,7 +34,7 @@ jobs:
           npm run build
 
   zip:
-    needs: copy
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Create ZIP package
