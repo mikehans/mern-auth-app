@@ -44,6 +44,7 @@ jobs:
         with: 
           artifacts: "deploy.zip"
           body: "This is the release body text"
+          commit: "2b04e6e"
 
   
  
