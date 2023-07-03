@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create ZIP package
-        run: zip -r release.zip . -x ./frontend
+        run: zip -r release.zip ./ -x ./frontend
 
   release:
     needs: zip
