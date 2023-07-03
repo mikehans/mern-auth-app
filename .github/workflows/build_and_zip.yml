@@ -33,7 +33,6 @@ jobs:
           npm run build
       - name: Make deployment folder
         run: |
-          cd ..
           npm run makeDeploy
       - name: ZIP deployment folder
         run: zip deploy.zip deploy
