@@ -1,18 +1,42 @@
-import {mkdir, copyFile, cp} from 'fs/promises';
+import { mkdir, copyFile, cp } from "fs/promises";
+import { join, resolve } from "path";
 
 try {
-    await mkdir('deploy');
+  const baseDir = resolve();
+  const deployDir = join(baseDir, "deploy");
 
-    await copyFile('package.json', 'deploy/package.json');
+  console.log("baseDir", baseDir);
+  console.log('deployDir', deployDir)
 
-    await mkdir('deploy/backend');
+  await mkdir(deployDir);
 
-    await cp('backend', 'deploy/backend', {recursive: true});
+  await copyFile(
+    join(baseDir, "package.json"),
+    join(deployDir, "package.json")
+  );
 
-    await cp('node_modules', 'deploy/node_modules', {recursive: true});
+  await mkdir(join(deployDir, "backend"));
 
-    await cp('frontend/dist', 'deploy/frontend/dist', {recursive: true});
-    
-} catch (err){
-    console.error(err);
+  await cp(
+    join(baseDir, "backend"), 
+    join(deployDir, "backend"), 
+    {
+    recursive: true,
+  });
+
+  await cp(
+    join(baseDir, "node_modules"), 
+    join(deployDir, "node_modules"), 
+    {
+    recursive: true,
+  });
+
+  await cp(
+    join(baseDir, "frontend", "dist"),
+    join(deployDir, "frontend", "dist"),
+    { recursive: true }
+  );
+
+} catch (err) {
+  console.error(err);
 }
