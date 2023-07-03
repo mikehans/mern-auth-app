@@ -3,6 +3,8 @@ name: Build and ZIP
 on:
   workflow_dispatch:
   push:
+    tags:
+      - "*"
     branches:
       - "master"
 
@@ -29,18 +31,7 @@ jobs:
         run: |
           cd ./frontend
           npm run build
-
-  zip:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Create ZIP package
         run: zip -r release.zip * frontend/dist/* -x frontend/ frontend/*
-
-  release:
-    needs: zip
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload release
-        run: echo "TODO - There should be a process here..."
+  
  
