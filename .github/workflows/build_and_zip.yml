@@ -1,9 +1,14 @@
 name: Build and ZIP
+
 on:
   workflow_dispatch:
   push:
     branches:
       - "master"
+
+env:
+  NODE_ENV: "production"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,23 +32,18 @@ jobs:
         run: |
           cd ./frontend
           npm run build
+
   zip:
     needs: copy
     runs-on: ubuntu-latest
     steps:
       - name: Create ZIP package
-        uses: actions/thedoctor0/zip-release@0.7.1
-        with:
-          type: 'zip'
-          filename: 'release.zip'
-          exclusions: './frontend/*'
+        run: zip -r release.zip . -x ./frontend
+
   release:
     needs: zip
     runs-on: ubuntu-latest
     steps:
       - name: Upload release
-        uses: ncipollo/release-action@v1.12.0
-        with:
-          artifacts: "release.zip"
-          token
+        run: echo "TODO: There should be a process here..."
  
