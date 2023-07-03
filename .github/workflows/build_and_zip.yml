@@ -31,7 +31,12 @@ jobs:
         run: |
           cd ./frontend
           npm run build
-      - name: Create ZIP package
-        run: zip -r release.zip * frontend/dist/* -x frontend/ frontend/*
+      - name: Make deployment folder
+        run: |
+          cd ..
+          npm run makeDeploy
+      - name: ZIP deployment folder
+        run: zip deploy.zip deploy
+
   
  
