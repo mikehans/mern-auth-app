@@ -28,4 +28,3 @@ BT uses this setup as it will avoid CORS issues as all will be hosted together o
 * Node JS
     * review what ```path.resolve()``` does
         * how are we getting the base folder for the app?
-    * 
