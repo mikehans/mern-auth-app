@@ -45,5 +45,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Upload release
-        run: echo "TODO: There should be a process here..."
+        run: echo "TODO - There should be a process here..."
  
