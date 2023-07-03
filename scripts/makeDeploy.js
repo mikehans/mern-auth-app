@@ -10,10 +10,10 @@ try {
 
   await mkdir(deployDir);
 
-  await copyFile(
-    join(baseDir, "package.json"),
-    join(deployDir, "package.json")
-  );
+//   await cp(
+//     join(baseDir, "package.json"),
+//     join(deployDir, "package.json")
+//   );
 
   await mkdir(join(deployDir, "backend"));
 
