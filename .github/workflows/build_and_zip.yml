@@ -3,11 +3,11 @@ name: Build and ZIP
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "0.0.2"
-    branches:
-      - "master"
+  # push:
+  #   tags:
+  #     - "0.0.2"
+  #   branches:
+  #     - "master"
 
 jobs:
   build:
