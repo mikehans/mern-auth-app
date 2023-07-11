@@ -1,36 +1,57 @@
-@description('Set the deployment environment')
+@description('The Azure region into which the resources should be deployed.')
+param location string = resourceGroup().location
+
+@description('The type of environment. This must be nonprod or prod.')
 @allowed([
-  'dev'
+  'nonprod'
   'prod'
 ])
 param environmentType string
 
-@description('Region that resources will be deployed to')
-@minLength(3)
-@maxLength(24)
-param location string = 'australiaeast'
+@description('A unique suffix to add to resource names that need to be globally unique.')
+@maxLength(13)
+param resourceNameSuffix string = uniqueString(resourceGroup().id)
 
-@description('Name of the web app')
-param appServiceAppName string = 'mernauth00${uniqueString(resourceGroup().id)}'
+var appServiceAppName = 'toy-website-${resourceNameSuffix}'
+var appServicePlanName = 'toy-website-plan'
+var toyManualsStorageAccountName = 'toyweb${resourceNameSuffix}'
 
-@description('App Service Plan name')
-param appServicePlanName string = 'mernauth-plan'
+// Define the SKUs for each component based on the environment type.
+var environmentConfigurationMap = {
+  nonprod: {
+    appServicePlan: {
+      sku: {
+        name: 'F1'
+        capacity: 1
+      }
+    }
+    toyManualsStorageAccount: {
+      sku: {
+        name: 'Standard_LRS'
+      }
+    }
+  }
+  prod: {
+    appServicePlan: {
+      sku: {
+        name: 'S1'
+        capacity: 2
+      }
+    }
+    toyManualsStorageAccount: {
+      sku: {
+        name: 'Standard_ZRS'
+      }
+    }
+  }
+}
 
-@description('The runtime stack')
-param linuxFxVersion string = 'NODE|18-lts'
+var toyManualsStorageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${toyManualsStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${toyManualsStorageAccount.listKeys().keys[0].value}'
 
-var appServicePlanSkuName = (environmentType == 'prod') ? 'P1V2' : 'F1'
-
-resource appServicePlan 'Microsoft.Web/serverFarms@2022-03-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
-  sku: {
-    name: appServicePlanSkuName
-  }
-  kind: 'linux'
-  properties:{
-    reserved: true
-  }
+  sku: environmentConfigurationMap[environmentType].appServicePlan.sku
 }
 
 resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
@@ -40,19 +61,19 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
     serverFarmId: appServicePlan.id
     httpsOnly: true
     siteConfig: {
-      linuxFxVersion: linuxFxVersion
-      minTlsVersion: '1.2'
-      ftpsState: 'FtpsOnly'
+      appSettings: [
+        {
+          name: 'ToyManualsStorageAccountConnectionString'
+          value: toyManualsStorageAccountConnectionString
+        }
+      ]
     }
   }
 }
 
-resource slot 'Microsoft.Web/sites/slots@2022-09-01' = if(environmentType == 'prod') {
-  name: 'preprod'
+resource toyManualsStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: toyManualsStorageAccountName
   location: location
-  parent: appServiceApp
-  kind: 'app'
-  properties: {
-    serverFarmId: appServicePlan.id
-  }
+  kind: 'StorageV2'
+  sku: environmentConfigurationMap[environmentType].toyManualsStorageAccount.sku
 }
