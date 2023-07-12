@@ -11,7 +11,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: mern-auth-app
   AZURE_WEBAPP_DEPLOYZIP: ./deploy.zip
-  AZURE_RESOURCEGROUP_NAME: mern-auth-app-rg
+  AZURE_RESOURCEGROUP_NAME: mern-auth-rg
   ENVIRONMENT: nonprod
 
 permissions:
