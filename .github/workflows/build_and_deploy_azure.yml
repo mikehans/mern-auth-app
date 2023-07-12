@@ -1,4 +1,4 @@
-name: Build and ZIP
+name: Deploy to Azure Web Apps
 
 on:
   workflow_dispatch:
