@@ -12,9 +12,9 @@ param environmentType string
 @maxLength(13)
 param resourceNameSuffix string = uniqueString(resourceGroup().id)
 
-var appServiceAppName = 'toy-website-${resourceNameSuffix}'
-var appServicePlanName = 'toy-website-plan'
-var toyManualsStorageAccountName = 'toyweb${resourceNameSuffix}'
+var appServiceAppName = 'mern-auth-${resourceNameSuffix}'
+var appServicePlanName = 'mern-auth-plan'
+var toyManualsStorageAccountName = 'mernauth${resourceNameSuffix}'
 
 // Define the SKUs for each component based on the environment type.
 var environmentConfigurationMap = {
@@ -40,11 +40,14 @@ var environmentConfigurationMap = {
     }
     toyManualsStorageAccount: {
       sku: {
-        name: 'Standard_ZRS'
+        name: 'Standard_LRS'
       }
     }
   }
 }
+
+@description('The runtime stack')
+param linuxFxVersion string = 'NODE|18-lts'
 
 var toyManualsStorageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${toyManualsStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${toyManualsStorageAccount.listKeys().keys[0].value}'
 
@@ -52,6 +55,10 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
   sku: environmentConfigurationMap[environmentType].appServicePlan.sku
+  kind: 'linux'
+  properties:{
+    reserved: true
+  }
 }
 
 resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
@@ -61,6 +68,9 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
     serverFarmId: appServicePlan.id
     httpsOnly: true
     siteConfig: {
+      linuxFxVersion: linuxFxVersion
+      minTlsVersion: '1.2'
+      ftpsState: 'FtpsOnly'
       appSettings: [
         {
           name: 'ToyManualsStorageAccountConnectionString'
@@ -76,4 +86,14 @@ resource toyManualsStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01'
   location: location
   kind: 'StorageV2'
   sku: environmentConfigurationMap[environmentType].toyManualsStorageAccount.sku
+}
+
+resource slot 'Microsoft.Web/sites/slots@2022-09-01' = if(environmentType == 'prod') {
+  name: 'preprod'
+  location: location
+  parent: appServiceApp
+  kind: 'app'
+  properties: {
+    serverFarmId: appServicePlan.id
+  }
 }
