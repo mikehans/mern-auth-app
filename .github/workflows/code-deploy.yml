@@ -1,0 +1,77 @@
+name: Deploy code to Azure Web Apps
+
+on:
+  workflow_dispatch:
+  # push:
+  #   tags:
+  #     - "0.0.2"
+  #   branches:
+  #     - "master"
+
+env:
+  AZURE_WEBAPP_NAME: mern-auth-app
+  AZURE_WEBAPP_DEPLOYZIP: ./deploy.zip
+  AZURE_RESOURCEGROUP_NAME: mern-auth-rg
+  ENVIRONMENT: nonprod
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Package installations for Backend
+        run: npm install
+
+      - name: Package installations for Frontend
+        run: |
+          cd ./frontend
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd ./frontend
+          npm run build
+
+      - name: Make deployment folder
+        run: |
+          npm run makeDeploy
+
+      - name: ZIP deployment folder
+        run: |
+          cd ./deploy
+          zip -r ../deploy.zip .
+
+      - name: Sign into Azure
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Web App
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_DEPLOYZIP }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+            name: deploy.zip
+            path: ./deploy.zip
