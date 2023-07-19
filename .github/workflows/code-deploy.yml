@@ -9,7 +9,7 @@ on:
   #     - "master"
 
 env:
-  AZURE_WEBAPP_NAME: mern-auth-app
+  AZURE_WEBAPP_NAME: mern-auth-rypz7wf7vsijw
   AZURE_WEBAPP_DEPLOYZIP: ./deploy.zip
   AZURE_RESOURCEGROUP_NAME: mern-auth-rg
   ENVIRONMENT: nonprod
